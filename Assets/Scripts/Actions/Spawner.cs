@@ -25,6 +25,10 @@ public class Spawner : MonoBehaviour {
 		players.Add (id, player);
 	}
 
+	public void UpdatePlayerPosition(string id, Vector3 position) {
+		players [id].transform.position = position;
+	}
+
 	public GameObject FindPlayer(string id) {
 		return players [id];
 	}

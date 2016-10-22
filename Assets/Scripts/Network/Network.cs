@@ -66,12 +66,15 @@ public class Network : MonoBehaviour {
 		socket.Emit ("updatePosition", VectorToJSON(player.transform.position));
 	}
 
+	void SendPositionToServer() {
+		socket.Emit ("updatePosition", VectorToJSON(player.transform.position));
+	}
+
 	void OnUpdatePosition(SocketIOEvent e) {
 		Debug.Log ("updating position: " + e.data);
 
 		var pos = GetVectorFromJSON(e);
 		var player = spawner.FindPlayer(e.data ["id"].str);
-
 		player.transform.position = pos;
 	}
 
@@ -86,21 +89,33 @@ public class Network : MonoBehaviour {
 		Debug.Log ("received attack: " + e.data);
 
 		var attackingPlayer = spawner.FindPlayer (e.data["id"].str);
-		var targetPlayer = spawner.FindPlayer (e.data["targetId"].str);
+		attackingPlayer.transform.position = GetVectorFromJSON (e);
+
+		var targetId = e.data ["targetId"].str;
+		var targetPlayer = spawner.FindPlayer (targetId);
 
 		Attacker.Attack (attackingPlayer, targetPlayer);
 
+		if (isCurrentPlayer(targetId)) {
+			SendPositionToServer();
+		}
+
+	}
+
+	bool isCurrentPlayer(string id) {
+		return id == player.GetComponent<NetworkEntity> ().id;
 	}
 
 	void OnRegister(SocketIOEvent e) {
 		Debug.Log ("register: " + e.data);
 		string myPlayerId = e.data ["id"].str;
+		player.GetComponent<NetworkEntity> ().id = myPlayerId;
 		spawner.AddPlayer (myPlayerId, player);
 	}
 
-	public static void Attack(string targetId) {
+	public static void Attack(string targetId, Vector3 position) {
 		Debug.Log ("attacking player: " + Network.PlayerIdToJson (targetId));
-		socket.Emit ("attack", new JSONObject(Network.PlayerIdToJson (targetId)));
+		socket.Emit ("attack", AttackerToJSON(targetId, position));
 	}
 
 	public static void Follow(string id) {
@@ -124,6 +139,14 @@ public class Network : MonoBehaviour {
 
 	public static JSONObject VectorToJSON(Vector3 vector) {
 		JSONObject j = new JSONObject (JSONObject.Type.OBJECT);
+		j.AddField ("x", vector.x);
+		j.AddField ("y", vector.z);
+		return j;
+	}
+
+	public static JSONObject AttackerToJSON(string targetId, Vector3 vector) {
+		JSONObject j = new JSONObject (JSONObject.Type.OBJECT);
+		j.AddField ("targetId", targetId);
 		j.AddField ("x", vector.x);
 		j.AddField ("y", vector.z);
 		return j;
