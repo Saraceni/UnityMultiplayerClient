@@ -23,10 +23,11 @@ public class Network : MonoBehaviour {
 		socket.On("register", OnRegister);
 		socket.On ("spawn", OnSpawned);
 		socket.On ("move", OnMove);
+		socket.On ("follow", OnFollow);
+		socket.On ("attack", OnAttack);
 		socket.On ("disconnected", OnDisconnected);
 		socket.On ("requestPosition", OnRequestPosition);
 		socket.On ("updatePosition", OnUpdatePosition);
-		socket.On ("follow", OnFollow);
 	}
 
 	void OnMove(SocketIOEvent e) {
@@ -77,14 +78,26 @@ public class Network : MonoBehaviour {
 
 	void OnFollow(SocketIOEvent e) {
 		Debug.Log ("follow request: " + e.data);
-		var target = spawner.FindPlayer (e.data["targetId"].str);
+		var targetTransform = spawner.FindPlayer (e.data["targetId"].str).transform;
 		var player = spawner.FindPlayer (e.data["id"].str);
-		player.GetComponent<Follower> ().target = target.transform;
+		player.GetComponent<Targeter> ().target = targetTransform;
+	}
+
+	void OnAttack(SocketIOEvent e) {
+		Debug.Log ("received attack: " + e.data);
+		var targetTransform = spawner.FindPlayer (e.data["targetId"].str).transform;
+		var player = spawner.FindPlayer (e.data["id"].str);
 	}
 
 	void OnRegister(SocketIOEvent e) {
 		Debug.Log ("register: " + e.data);
-		spawner.AddPlayer (e.data ["id"].str, player);
+		string myPlayerId = e.data ["id"].str;
+		spawner.AddPlayer (myPlayerId, player);
+	}
+
+	public static void Attack(string targetId) {
+		Debug.Log ("attacking player: " + Network.PlayerIdToJson (targetId));
+		socket.Emit ("attack", new JSONObject(Network.PlayerIdToJson (targetId)));
 	}
 
 	public static void Follow(string id) {
@@ -93,7 +106,7 @@ public class Network : MonoBehaviour {
 		socket.Emit ("follow", new JSONObject(Network.PlayerIdToJson(id)));
 	}
 
-	static public void Move(Vector3 position) {
+	public static void Move(Vector3 position) {
 		Debug.Log ("sending move: " + Network.VectorToJSON (position));
 		socket.Emit ("move", Network.VectorToJSON (position));
 	}

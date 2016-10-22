@@ -45,15 +45,18 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\Follower.cs" />
+     <Compile Include="Assets\Scripts\Actions\Attacker.cs" />
+     <Compile Include="Assets\Scripts\Actions\Follower.cs" />
+     <Compile Include="Assets\Scripts\Actions\Navigator.cs" />
+     <Compile Include="Assets\Scripts\Actions\Spawner.cs" />
+     <Compile Include="Assets\Scripts\Actions\Targeter.cs" />
+     <Compile Include="Assets\Scripts\Hittable.cs" />
      <Compile Include="Assets\Scripts\Interfaces\IClickable.cs" />
-     <Compile Include="Assets\Scripts\Navigator.cs" />
      <Compile Include="Assets\Scripts\Network\Network.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkEntity.cs" />
-     <Compile Include="Assets\Scripts\Spawner.cs" />
-     <Compile Include="Assets\Scripts\actions\ClickFollow.cs" />
-     <Compile Include="Assets\Scripts\actions\ClickMove.cs" />
-     <Compile Include="Assets\Scripts\actions\ScreenClicker.cs" />
+     <Compile Include="Assets\Scripts\UserInput\ClickFollow.cs" />
+     <Compile Include="Assets\Scripts\UserInput\ClickMove.cs" />
+     <Compile Include="Assets\Scripts\UserInput\ScreenClicker.cs" />
      <Compile Include="Assets\SocketIO\JSONObject\JSONObject.cs" />
      <Compile Include="Assets\SocketIO\JSONObject\JSONTemplates.cs" />
      <Compile Include="Assets\SocketIO\JSONObject\VectorTemplates.cs" />

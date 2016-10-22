@@ -1,10 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Network/Network.cs">
     <Files>
-      <File FileName="Assets/Scripts/Network/Network.cs" Line="95" Column="2" />
-      <File FileName="Assets/Scripts/Spawner.cs" Line="17" Column="92" />
-      <File FileName="Assets/Scripts/Network/NetworkEntity.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/UserInput/ClickFollow.cs" Line="19" Column="39" />
+      <File FileName="Assets/Scripts/Actions/Navigator.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Actions/Targeter.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Actions/Follower.cs" Line="32" Column="2" />
+      <File FileName="Assets/Scripts/Network/Network.cs" Line="91" Column="3" />
+      <File FileName="Assets/Scripts/Actions/Attacker.cs" Line="26" Column="4" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
