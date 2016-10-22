@@ -70,7 +70,6 @@ public class Network : MonoBehaviour {
 		Debug.Log ("updating position: " + e.data);
 
 		var pos = GetVectorFromJSON(e);
-		
 		var player = spawner.FindPlayer(e.data ["id"].str);
 
 		player.transform.position = pos;
@@ -85,8 +84,12 @@ public class Network : MonoBehaviour {
 
 	void OnAttack(SocketIOEvent e) {
 		Debug.Log ("received attack: " + e.data);
-		var targetTransform = spawner.FindPlayer (e.data["targetId"].str).transform;
-		var player = spawner.FindPlayer (e.data["id"].str);
+
+		var attackingPlayer = spawner.FindPlayer (e.data["id"].str);
+		var targetPlayer = spawner.FindPlayer (e.data["targetId"].str);
+
+		Attacker.Attack (attackingPlayer, targetPlayer);
+
 	}
 
 	void OnRegister(SocketIOEvent e) {
@@ -113,6 +116,10 @@ public class Network : MonoBehaviour {
 
 	public static Vector3 GetVectorFromJSON(SocketIOEvent e) {
 		return new Vector3 (e.data["x"].n, 0, e.data["y"].n);
+	}
+
+	public static Vector3 GetVectorFromJSON(SocketIOEvent e, string x, string y) {
+		return new Vector3 (e.data[x].n, 0, e.data[y].n);
 	}
 
 	public static JSONObject VectorToJSON(Vector3 vector) {

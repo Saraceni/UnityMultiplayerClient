@@ -28,4 +28,13 @@ public class Attacker : MonoBehaviour {
 	bool isReadyToAttack() {
 		return Time.time - lastAttackTime > attackRate && targeter.target;
 	}
+
+	public static void Attack(GameObject attacking, GameObject target) {
+
+		target.GetComponent<Hittable> ().health -= 10;
+		Vector3 targetPosition = target.transform.position;
+
+		attacking.transform.LookAt(new Vector3(targetPosition.x, 0, targetPosition.z));
+		attacking.GetComponent<Animator> ().SetTrigger ("Attack");
+	}
 }

@@ -23,7 +23,6 @@ public class Follower : MonoBehaviour {
 
 		if (isReadyToScan ()) {
 			if(!targeter.IsInRange(stopFollowDistance)) {
-				Debug.Log ("Scanning nav path");
 				agent.SetDestination(targeter.target.position);
 			} else if(agent.hasPath) {
 				agent.SetDestination(transform.position);
