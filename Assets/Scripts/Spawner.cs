@@ -15,7 +15,6 @@ public class Spawner : MonoBehaviour {
 
 		// Inject references
 		player.GetComponent<ClickFollow> ().myPlayerFollower = myPlayer.GetComponent<Follower>();
-		player.GetComponent<NetworkFollow> ().socket = socket;
 		player.GetComponent<NetworkEntity> ().id = id;
 		AddPlayer (id, player);
 

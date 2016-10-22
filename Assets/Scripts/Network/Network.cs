@@ -87,6 +87,17 @@ public class Network : MonoBehaviour {
 		spawner.AddPlayer (e.data ["id"].str, player);
 	}
 
+	public static void Follow(string id) {
+		// send position to node
+		Debug.Log ("sending follow player id: " + Network.PlayerIdToJson(id));
+		socket.Emit ("follow", new JSONObject(Network.PlayerIdToJson(id)));
+	}
+
+	static public void Move(Vector3 position) {
+		Debug.Log ("sending move: " + Network.VectorToJSON (position));
+		socket.Emit ("move", Network.VectorToJSON (position));
+	}
+
 	public static Vector3 GetVectorFromJSON(SocketIOEvent e) {
 		return new Vector3 (e.data["x"].n, 0, e.data["y"].n);
 	}

@@ -45,17 +45,15 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\ClickFollow.cs" />
-     <Compile Include="Assets\Scripts\ClickMove.cs" />
      <Compile Include="Assets\Scripts\Follower.cs" />
      <Compile Include="Assets\Scripts\Interfaces\IClickable.cs" />
      <Compile Include="Assets\Scripts\Navigator.cs" />
      <Compile Include="Assets\Scripts\Network\Network.cs" />
      <Compile Include="Assets\Scripts\Network\NetworkEntity.cs" />
-     <Compile Include="Assets\Scripts\Network\NetworkFollow.cs" />
-     <Compile Include="Assets\Scripts\Network\NetworkMove.cs" />
-     <Compile Include="Assets\Scripts\ScreenClicker.cs" />
      <Compile Include="Assets\Scripts\Spawner.cs" />
+     <Compile Include="Assets\Scripts\actions\ClickFollow.cs" />
+     <Compile Include="Assets\Scripts\actions\ClickMove.cs" />
+     <Compile Include="Assets\Scripts\actions\ScreenClicker.cs" />
      <Compile Include="Assets\SocketIO\JSONObject\JSONObject.cs" />
      <Compile Include="Assets\SocketIO\JSONObject\JSONTemplates.cs" />
      <Compile Include="Assets\SocketIO\JSONObject\VectorTemplates.cs" />
