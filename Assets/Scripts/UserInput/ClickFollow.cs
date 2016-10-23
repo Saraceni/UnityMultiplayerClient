@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System.Collections;
 
 public class ClickFollow : MonoBehaviour, IClickable {

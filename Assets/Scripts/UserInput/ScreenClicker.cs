@@ -10,20 +10,25 @@ public class ScreenClicker : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetButtonDown ("Fire2")) {
+		if (Input.touchCount > 0 && Input.GetTouch (0).phase == TouchPhase.Began) {
+			Debug.Log ("Received Input");
 			Clicked ();
 		}
 	}
 
 	void Clicked() {
-		var ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
+		var touch = Input.GetTouch (0);
+
+		var ray = Camera.main.ScreenPointToRay (touch.position);
 		RaycastHit hit = new RaycastHit ();
-
+		
 		if (Physics.Raycast (ray, out hit)) {
 
+			Debug.Log (hit.collider.gameObject.name);
 			var clickMove = hit.collider.gameObject.GetComponent<IClickable>();
 			clickMove.OnClick(hit);
 		}
 	}
+
 }
