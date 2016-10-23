@@ -1,15 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Network/Network.cs">
     <Files>
-      <File FileName="Assets/Scripts/UserInput/ClickFollow.cs" Line="18" Column="37" />
+      <File FileName="Assets/Scripts/Network/Network.cs" Line="92" Column="62" />
+      <File FileName="Assets/Scripts/Actions/Spawner.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/UserInput/ClickFollow.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Actions/Navigator.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/Actions/Targeter.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Actions/Follower.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Network/Network.cs" Line="92" Column="62" />
-      <File FileName="Assets/Scripts/Actions/Attacker.cs" Line="23" Column="4" />
+      <File FileName="Assets/Scripts/Actions/Follower.cs" Line="27" Column="5" />
+      <File FileName="Assets/Scripts/Actions/Attacker.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/UserInput/ClickMove.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Actions/Spawner.cs" Line="6" Column="2" />
       <File FileName="Assets/Scripts/Hittable.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

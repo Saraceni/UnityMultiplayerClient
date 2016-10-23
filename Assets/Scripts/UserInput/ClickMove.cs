@@ -7,9 +7,12 @@ public class ClickMove : MonoBehaviour, IClickable {
 	
 	// Update is called once per frame
 	public void OnClick (RaycastHit hit) {
-		var navigator = player.GetComponent<Navigator> ();
-		navigator.NavigateTo (hit.point);
 
-		Network.Move (hit.point);
+		if (!player.GetComponent<Hittable> ().IsDead) {
+			var navigator = player.GetComponent<Navigator> ();
+			navigator.NavigateTo (hit.point);
+			
+			Network.Move (player.transform.position, hit.point);
+		}
 	}
 }

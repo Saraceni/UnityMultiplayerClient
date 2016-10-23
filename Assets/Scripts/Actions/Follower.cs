@@ -22,7 +22,10 @@ public class Follower : MonoBehaviour {
 	void Update () {
 
 		if (isReadyToScan ()) {
-			if(!targeter.IsInRange(stopFollowDistance)) {
+			if(targeter.target.gameObject.GetComponent<Hittable>().IsDead) {
+				targeter.target = null;
+			}
+			else if(!targeter.IsInRange(stopFollowDistance)) {
 				agent.SetDestination(targeter.target.position);
 			} else if(agent.hasPath) {
 				agent.SetDestination(transform.position);
@@ -34,6 +37,11 @@ public class Follower : MonoBehaviour {
 	bool isReadyToScan ()
 	{
 		return Time.time - lastScanTime > scanFrequency && targeter.target;
+	}
+
+	public void ClearPositionAndTarget() {
+		agent.ResetPath ();
+		targeter.target = null;
 	}
 
 }

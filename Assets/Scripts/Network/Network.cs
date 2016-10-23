@@ -124,9 +124,14 @@ public class Network : MonoBehaviour {
 		socket.Emit ("follow", new JSONObject(Network.PlayerIdToJson(id)));
 	}
 
-	public static void Move(Vector3 position) {
-		Debug.Log ("sending move: " + Network.VectorToJSON (position));
-		socket.Emit ("move", Network.VectorToJSON (position));
+	public static void Move(Vector3 current, Vector3 destination) {
+		Debug.Log ("sending move: " + Network.VectorToJSON (destination));
+
+		JSONObject data = new JSONObject (JSONObject.Type.OBJECT);
+		data.AddField ("c", Network.VectorToJSON (current));
+		data.AddField ("d", Network.VectorToJSON (destination));
+
+		socket.Emit ("move", data);
 	}
 
 	public static Vector3 GetVectorFromJSON(SocketIOEvent e) {
