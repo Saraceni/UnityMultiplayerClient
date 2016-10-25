@@ -1,15 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/UserInput/ClickMove.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Actions/Spawner.cs">
     <Files>
-      <File FileName="Assets/Scripts/Network/Network.cs" Line="5" Column="39" />
-      <File FileName="Assets/Scripts/UserInput/ClickFollow.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Actions/Targeter.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Actions/Follower.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Actions/Attacker.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/UserInput/ClickMove.cs" Line="17" Column="3" />
-      <File FileName="Assets/Scripts/UserInput/ScreenClicker.cs" Line="1" Column="1" />
-      <File FileName="Assets/Standard Assets/CrossPlatformInput/Scripts/Joystick.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Network/Network.cs" Line="110" Column="3" />
+      <File FileName="Assets/Scripts/Actions/Navigator.cs" Line="22" Column="44" />
+      <File FileName="Assets/Scripts/Actions/Spawner.cs" Line="27" Column="3" />
+      <File FileName="Assets/Scripts/Actions/Respawner.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -13,9 +13,6 @@ public class Spawner : MonoBehaviour {
 	public GameObject SpawnPlayer(string id) {
 		var player = Instantiate (playerPrefab, Vector3.zero, Quaternion.identity) as GameObject;
 
-		// Inject references
-		player.GetComponent<ClickFollow> ().myPlayer = myPlayer;
-		player.GetComponent<NetworkEntity> ().id = id;
 		AddPlayer (id, player);
 
 		return player;
@@ -23,10 +20,6 @@ public class Spawner : MonoBehaviour {
 
 	public void AddPlayer(string id, GameObject player) {
 		players.Add (id, player);
-	}
-
-	public void UpdatePlayerPosition(string id, Vector3 position) {
-		players [id].transform.position = position;
 	}
 
 	public GameObject FindPlayer(string id) {

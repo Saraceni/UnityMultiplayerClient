@@ -4,6 +4,12 @@ using SocketIO;
 
 public class Network : MonoBehaviour {
 
+	public const string PlayerId = "id";
+	public const string PositionX = "x";
+	public const string PositionY = "y";
+	public const string Rotation = "rot";
+	public const string IsWalking = "walking";
+	
 	static SocketIOComponent socket;
 
 	public GameObject player;
@@ -22,22 +28,9 @@ public class Network : MonoBehaviour {
 		socket.On("open", OnConnected);
 		socket.On("register", OnRegister);
 		socket.On ("spawn", OnSpawned);
-		socket.On ("move", OnMove);
-		socket.On ("follow", OnFollow);
 		socket.On ("attack", OnAttack);
 		socket.On ("disconnected", OnDisconnected);
-		socket.On ("requestPosition", OnRequestPosition);
 		socket.On ("updatePosition", OnUpdatePosition);
-	}
-
-	void OnMove(SocketIOEvent e) {
-		Debug.Log ("player is moving " + e.data);
-
-		var pos = GetVectorFromJSON (e);
-		var player = spawner.FindPlayer(e.data ["id"].str);
-		var navigatePos = player.GetComponent<Navigator> ();
-
-		navigatePos.NavigateTo (pos);
 	}
 
 	void OnConnected(SocketIOEvent e) {
@@ -47,118 +40,73 @@ public class Network : MonoBehaviour {
 	void OnSpawned(SocketIOEvent e) {
 		Debug.Log ("spawned " + e.data);
 
-		var player = spawner.SpawnPlayer (e.data ["id"].str);
-
-		if (e.data ["x"]) {
-			var movePosition = GetVectorFromJSON(e);
-			var navigatePos = player.GetComponent<Navigator> ();
-			navigatePos.NavigateTo (movePosition);
-		}
+		var player = spawner.SpawnPlayer (e.data [PlayerId].str);
+		UpdatePlayerData (player, e);
 
 	}
 
 	void OnDisconnected(SocketIOEvent e) {
-		var id = e.data ["id"].str;
+		var id = e.data [PlayerId].str;
 		spawner.Remove (id);
 	}
 
-	void OnRequestPosition(SocketIOEvent e) {
-		socket.Emit ("updatePosition", VectorToJSON(player.transform.position));
-	}
-
-	void SendPositionToServer() {
-		socket.Emit ("updatePosition", VectorToJSON(player.transform.position));
-	}
-
 	void OnUpdatePosition(SocketIOEvent e) {
-		Debug.Log ("updating position: " + e.data);
 
-		var pos = GetVectorFromJSON(e);
-		var player = spawner.FindPlayer(e.data ["id"].str);
-		player.transform.position = pos;
-	}
+		Debug.Log ("OnUpdatePosition: " + e.data);
 
-	void OnFollow(SocketIOEvent e) {
-		Debug.Log ("follow request: " + e.data);
-		var targetTransform = spawner.FindPlayer (e.data["targetId"].str).transform;
-		var player = spawner.FindPlayer (e.data["id"].str);
-		player.GetComponent<Targeter> ().target = targetTransform;
+		var targetPlayer = spawner.FindPlayer (e.data[PlayerId].str);
+		UpdatePlayerData (targetPlayer, e);
+
 	}
 
 	void OnAttack(SocketIOEvent e) {
-		Debug.Log ("received attack: " + e.data);
+		Debug.Log ("OnAttack " + e.data);
 
-		var attackingPlayer = spawner.FindPlayer (e.data["id"].str);
-		attackingPlayer.transform.position = GetVectorFromJSON (e);
+		var attackingPlayer = spawner.FindPlayer (e.data[PlayerId].str);
+		UpdatePlayerData (attackingPlayer, e);
+		attackingPlayer.GetComponent<Attacker> ().Attack();
 
-		var targetId = e.data ["targetId"].str;
-		var targetPlayer = spawner.FindPlayer (targetId);
-
-		Attacker.Attack (attackingPlayer, targetPlayer);
-
-		if (isCurrentPlayer(targetId)) {
-			SendPositionToServer();
-		}
-
-	}
-
-	bool isCurrentPlayer(string id) {
-		return id == player.GetComponent<NetworkEntity> ().id;
 	}
 
 	void OnRegister(SocketIOEvent e) {
-		Debug.Log ("register: " + e.data);
-		string myPlayerId = e.data ["id"].str;
+		Debug.Log ("OnRegister " + e.data);
+		string myPlayerId = e.data [PlayerId].str;
 		player.GetComponent<NetworkEntity> ().id = myPlayerId;
 		spawner.AddPlayer (myPlayerId, player);
 	}
 
-	public static void Attack(string targetId, Vector3 position) {
-		Debug.Log ("attacking player: " + Network.PlayerIdToJson (targetId));
-		socket.Emit ("attack", AttackerToJSON(targetId, position));
+	public static void Attack(GameObject player, bool isWalking) {
+		Debug.Log ("attacking");
+		socket.Emit ("attack", PlayerDataToJSON(player.transform, isWalking));
 	}
 
-	public static void Follow(string id) {
-		// send position to node
-		Debug.Log ("sending follow player id: " + Network.PlayerIdToJson(id));
-		socket.Emit ("follow", new JSONObject(Network.PlayerIdToJson(id)));
-	}
-
-	public static void Move(Vector3 current, Vector3 destination) {
-		Debug.Log ("sending move: " + Network.VectorToJSON (destination));
-
-		JSONObject data = new JSONObject (JSONObject.Type.OBJECT);
-		data.AddField ("c", Network.VectorToJSON (current));
-		data.AddField ("d", Network.VectorToJSON (destination));
-
-		socket.Emit ("move", data);
+	public static void UpdatePlayerPosition(GameObject player, bool isWalking) {
+		socket.Emit ("updatePosition", PlayerDataToJSON(player.transform, isWalking));
 	}
 
 	public static Vector3 GetVectorFromJSON(SocketIOEvent e) {
-		return new Vector3 (e.data["x"].n, 0, e.data["y"].n);
+		return new Vector3 (e.data[PositionX].n, 0, e.data[PositionY].n);
 	}
 
-	public static Vector3 GetVectorFromJSON(SocketIOEvent e, string x, string y) {
-		return new Vector3 (e.data[x].n, 0, e.data[y].n);
+	public static void UpdatePlayerData(GameObject targetPlayer, SocketIOEvent e) {
+
+		targetPlayer.transform.position = GetVectorFromJSON (e);
+		targetPlayer.GetComponent<Animator> ().SetBool ("IsWalking", e.data [IsWalking].b);
+
+		float y_rotation = e.data [Rotation].n;
+		Vector3 attackingPlayerRotation = targetPlayer.transform.localEulerAngles;
+		attackingPlayerRotation.y = y_rotation;
+		
+		targetPlayer.transform.localEulerAngles = attackingPlayerRotation;
 	}
 
-	public static JSONObject VectorToJSON(Vector3 vector) {
+	public static JSONObject PlayerDataToJSON(Transform playerTransform, bool isWalking) {
 		JSONObject j = new JSONObject (JSONObject.Type.OBJECT);
-		j.AddField ("x", vector.x);
-		j.AddField ("y", vector.z);
+		j.AddField (PositionX, playerTransform.position.x);
+		j.AddField (PositionY, playerTransform.position.z);
+		j.AddField (Rotation, playerTransform.rotation.eulerAngles.y);
+		j.AddField (IsWalking, isWalking);
 		return j;
-	}
-
-	public static JSONObject AttackerToJSON(string targetId, Vector3 vector) {
-		JSONObject j = new JSONObject (JSONObject.Type.OBJECT);
-		j.AddField ("targetId", targetId);
-		j.AddField ("x", vector.x);
-		j.AddField ("y", vector.z);
-		return j;
-	}
-
-	public static string PlayerIdToJson(string id) {
-		return string.Format (@"{{""targetId"":""{0}"",}}", id);
 	}
 }
 

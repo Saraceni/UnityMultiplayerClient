@@ -1,45 +1,45 @@
 ﻿using UnityEngine;
+using UnityStandardAssets.CrossPlatformInput;
 using System.Collections;
 
 public class Attacker : MonoBehaviour {
 
-	public float attackDistance;
-	public float attackRate;
+	public float attackRate = 1;
 
 	float lastAttackTime = 0;
 
-	Targeter targeter;
+	Animator animator;
+	Navigator navigator;
+
+	private bool isAttacking = false;
 
 	// Use this for initialization
 	void Start () {
-		targeter = GetComponent<Targeter> ();
+		navigator = GetComponent<Navigator> ();
+		animator = GetComponent<Animator> ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		if (isReadyToAttack() && targeter.IsInRange (attackDistance) && isBothPlayersAlive() ) {
-			Debug.Log ("Attacking " + targeter.target.name);
-			var targetId = targeter.target.gameObject.GetComponent<NetworkEntity>().id;
-			Network.Attack(targetId, transform.position);
-			lastAttackTime = Time.time;
+		if(!isAttacking && CrossPlatformInputManager.GetButtonDown("Attack")) {
+			isAttacking = true;
+			Network.Attack(gameObject, navigator.IsWalking);
 		}
 	}	
 
-	bool isBothPlayersAlive() {
-		return !targeter.target.GetComponent<Hittable> ().IsDead && !GetComponent<Hittable> ().IsDead;
+	public void Attack() {
+		animator.SetTrigger ("Attack");
+		Invoke("resetIsAttacking", 1);
+	}
+
+	private void resetIsAttacking() {
+		isAttacking = false;
 	}
 
 	bool isReadyToAttack() {
-		return Time.time - lastAttackTime > attackRate && targeter.target;
+		return Time.time - lastAttackTime > attackRate;
 	}
 
-	public static void Attack(GameObject attacking, GameObject target) {
 
-		target.GetComponent<Hittable> ().OnHit ();
-		Vector3 targetPosition = target.transform.position;
-
-		attacking.transform.LookAt(new Vector3(targetPosition.x, 0, targetPosition.z));
-		attacking.GetComponent<Animator> ().SetTrigger ("Attack");
-	}
 }
